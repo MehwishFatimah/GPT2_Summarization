@@ -27,4 +27,8 @@
 - Add argparser (currently all hyperparams are stored in config.py)
 - Batch processing (currently working on batch_size = 1)
 - Store scores
+  
+### Credit:
+ - This code contains some parts from the following code/post:
+https://blog.paperspace.com/generating-text-summaries-gpt-2/
 
