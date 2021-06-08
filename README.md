@@ -1,20 +1,30 @@
-1:- Get pretrained model
-	1. Download pretrained model and tokenizer (GPT-2) (outside the code)
-	2. store it in a folder and load it from there
+# Environment
+- Use enivornment.yml or requirements.txt.
+# Description
 
-2:- Data processing
-	1. input to model: <bos> + text + <sep> + sum + <eos> (guess it should be done in loader not in df)
-	Truncate lengths of text and sum to fit in the design. 
-	Total sequence length = 768 or 1024 
-	2. split data
-	
-3:- Fine-tune tokenizer
-	1. add special tokens to GPT-2 tokenizer
-	2. fine-tune tokenizer for your data (train+val)
+### Step 1:- Get pretrained model (if want to skip Environment Cache)
+- Download pretrained model and tokenizer (GPT-2) in a local folder. Store it in a folder and load it from this location.
 
-3:- Fine-tuning model
+### Step 2:- Data processing
+- Split data into train/val/test.
+- Input to model: "<bos> + text + <sep> + summary + <eos> ". Truncate lengths of text and summary to fit in the design. Total sequence length can be 768 or 1024. 
+- Create Datalaoders of train and val.
 
-4:- Generation/Inference
+### Step 3:- GPT2 Tokenizer and Model
+- Add special tokens to GPT-2 tokenizer.
+- Resize model embeddings for new tokenizer length.
+- Fine-tuning model by passing train data and evaluating it on val data during training.
+- Store the tokenizer and fine-tuned model.
 
-5:- Evaluation of system output
+### Step 4:- Generation/Inference
+-  Generate summaries for test set which is not used during fine tune.
+-  Simple topk and beam search are used for the generation.
+
+### Step 5:- Evaluation with Rouge
+- Compute Rouge scores for test outputs and store it.
+
+### TODO:
+- Add argparser (currently all hyperparams are stored in config.py)
+- Batch processing (currently working on batch_size = 1)
+- Store scores
 
