@@ -1,6 +1,8 @@
 absl-py==0.11.0
 astunparse==1.6.3
 backcall==0.2.0
+bert-score==0.3.9
+BLEURT @ git+https://github.com/google-research/bleurt.git@b610120347ef22b494b6d69b4316e303f5932516
 blis==0.7.3
 cachetools==4.1.1
 catalogue==1.0.0
@@ -76,6 +78,7 @@ rsa==4.6
 sacremoses==0.0.43
 scikit-learn==0.23.2
 scipy==1.5.4
+sentencepiece==0.1.95
 seqeval==1.2.2
 six @ file:///tmp/build/80754af9/six_1605205327372/work
 spacy==2.3.4
@@ -85,6 +88,7 @@ tensorboard-plugin-wit==1.7.0
 tensorflow==2.3.1
 tensorflow-estimator==2.3.0
 termcolor==1.1.0
+tf-slim==1.1.0
 thinc==7.4.3
 threadpoolctl==2.1.0
 tokenizers==0.9.4
