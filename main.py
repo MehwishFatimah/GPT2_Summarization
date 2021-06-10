@@ -26,7 +26,7 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.enabled = False
 torch.backends.cudnn.benchmark = True # for fast training
 
-#torch.manual_seed(42)
+#torch.manual_seed(42) #for reproducibility
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
 import data_config as config
@@ -42,13 +42,8 @@ from utils.loader_utils import get_gpt2_dataset
 from datasets import list_metrics, load_metric
 from modules.training import Train
 from modules.generate import Generate
-#from modules.generation import generate_sample
-#from modules.generation import generate_beam_sample
 
 
-torch.cuda.empty_cache()
-device  = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-print('device: {}'.format(device))
 #import transformers
 #print('use transformers version = ',transformers.__version__) # make sure it is 2.6.0
 
@@ -60,7 +55,9 @@ if __name__ == "__main__":
 	'''----------------------------------------------------------------
 	2. Data processing
 	'''
-	
+	device  = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+	print('device: {}'.format(device))
+
 	file_name = config.file_name
 	file = os.path.join(config.data_dir, file_name)
 	if os.path.exists(file):
@@ -109,7 +106,7 @@ if __name__ == "__main__":
 	train_dataset, val_dataset= get_gpt2_dataset(train, val) 
 	
 	b = train_dataset.__getitem__(0)
-	#print(b['text'])#print(len(b['text']))#print(b['mask'])#print(b['s_idx'])
+	
 	train_dataloader = DataLoader(train_dataset, sampler = RandomSampler(train_dataset), batch_size = config.batch_size)
 	val_dataloader = DataLoader(val_dataset, sampler = SequentialSampler(val_dataset), batch_size = config.batch_size)
 	
@@ -144,8 +141,6 @@ if __name__ == "__main__":
 			text_gen = Generate(device, model_path)
 			#0= top_k, 1= beam_search, 2= both
 			text_gen.generation(test_dataset, gen_type=config.gen_type)
-			#generate_sample(test_dataset, tokenizer, model, device, num=5, length=config.max_sum, temperature=1, top_k=10, top_p=0.5)
-			#generate_beam_sample(test_dataset, tokenizer, model, device, num=5, length=config.max_sum)
 			
 		else:
 			print('Model/Vocab path does not exist.')
@@ -157,36 +152,12 @@ if __name__ == "__main__":
 	'''----------------------------------------------------------------
 	7. Evaluation
 	'''
-	metrics_list = list_metrics()
-	#print(', '.join(metric for metric in metrics_list))
-	#accuracy, bertscore, bleu, bleurt, cer, comet, coval, cuad, f1, 
-	#gleu, glue, indic_glue, matthews_correlation, meteor, pearsonr, 
-	#precision, recall, rouge, sacrebleu, sari, seqeval, spearmanr, 
-	#squad, squad_v2, super_glue, wer, xnli
-
-	metric = load_metric('rouge') #, 'mrpc')
-	summaries = os.path.join(config.out_dir, config.generated)
+	summaries = os.path.join(config.out_dir, config.results)
 	file = os.path.join(summaries, config.topk_file)
-	out_file = os.path.join(config.out_dir, config.topk_score_file)
+	if os.path.exists(file):
+		score = Evaluate(device)
+		score.evaluation(file)
 	
-	df = pd.read_csv(file)
-	df['scores'] = pd.Series()
-	for index, row in df.iterrows():
-		prediction = []
-		prediction.append(row['generated']) ##.split(" ") #.tolist()
-		#print(prediction)
-		reference = []
-		reference.append(row['summary']) #.split(" ")
-		#metric.add(predictions= prediction, references= reference)
-
-		score = metric.compute(predictions= prediction, references= reference)
-		#print(score)
-		print(type(score))
-		row['scores'] = str(score)
-
-	
-	df.to_csv(out_file, encoding='utf-8')
-
 
 	'''------------------------------------------------------------------
 	'''

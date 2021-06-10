@@ -12,11 +12,14 @@ out_dir = "/hits/basement/nlp/fatimamh/gpt2b_out"
 processed_set= "dataset" #split and tokenized
 final_model = "fine_tuned"
 training_models = "epochs_log"
-generated = "summaries"
+results = "summaries"
 
 topk_file = "topk_summaries.csv"
 beam_file = "beam_summaries.csv"
-topk_score_file = "topk_scores.csv"
+topk_rouge_file = "topk_rouge_scores.csv"
+topk_bleu_file = "topk_bleu_scores.csv"
+topk_bert_file = "topk_bert_scores.csv"
+topk_bleurt_file = "topk_bleurt_scores.csv"
 
 # text and sum len
 max_seq_len = 768 #1024 to do
@@ -27,13 +30,11 @@ min_sum     = 100
 # split ratio
 sr = 0.2
 
-batch_size = 1
-test_batch = 1 # fix it
-
-
+batch_size = 1 # fix it
+test_batch = 1 
 
 #training param
-epochs = 100
+epochs = 2
 learning_rate = 5e-4
 warmup_steps = 1e2
 epsilon = 1e-8
