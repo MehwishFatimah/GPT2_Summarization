@@ -61,7 +61,7 @@ class Train(object):
 		self.model = GPT2LMHeadModel.from_pretrained(model_path, 
 													 config=self.configuration) # instantiate the model
 		self.model.resize_token_embeddings(tokenizer_len)
-		print('tokenizer len: {}'.format(tokenizer_len))
+		#print('tokenizer len: {}'.format(tokenizer_len))
 		self.model.to(self.device)
 		
 		self.optimizer = AdamW(self.model.parameters(), 
@@ -96,8 +96,8 @@ class Train(object):
 		#print('logits: {}'.format(logits.shape))
 		
 		idx = batch['s_idx'].item() # index of separator token
-		print('logits: {}'.format(logits.shape))
-		print('idx: {}'.format(idx))
+		#print('logits: {}'.format(logits.shape))
+		#print('idx: {}'.format(idx))
 		# only consider loss on reference summary just like seq2seq models
 		shift_logits = logits[..., idx:-1, :].contiguous()
 		shift_labels = labels[..., idx+1:].contiguous()
@@ -123,8 +123,8 @@ class Train(object):
 			#print('logits: {}'.format(logits.shape))
 			
 			idx = batch['s_idx'].item() # index of separator token
-			print('logits: {}'.format(logits.shape))
-			print('idx: {}'.format(idx))
+			#print('logits: {}'.format(logits.shape))
+			#print('idx: {}'.format(idx))
 			# only consider loss on reference summary just like seq2seq models
 			shift_logits = logits[..., idx:-1, :].contiguous()
 			shift_labels = labels[..., idx+1:].contiguous()
@@ -255,7 +255,7 @@ class Train(object):
 		for epoch_i in range(0, epochs):
 
 			print('======== Epoch {}/{} ========'.format(epoch_i + 1, epochs))
-			print('Training...')
+			#print('Training...')
 
 			t0 = time.time()
 			total_train_loss = self.train_loop(train_dataloader)
@@ -265,7 +265,7 @@ class Train(object):
 			print("  Average training loss: {0:.2f}".format(avg_train_loss))
 			print("  Training epoch took: {:}".format(training_time))
 						
-			print("Running Validation...")
+			#print("Running Validation...")
 
 			t0 = time.time()
 

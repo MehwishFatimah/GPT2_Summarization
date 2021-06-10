@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri May 28 18:04:52 2021
-
+make it a module
 @author: fatimamh
-TODO: Finetune TOKENIZER
+
 """
 
 #from transformers import GPT2Tokenizer

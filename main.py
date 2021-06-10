@@ -39,10 +39,9 @@ from utils.tokenizer_utils import process_tokenizer
 from utils.tokenizer_utils import tokenize_dataset
 from utils.loader_utils import get_gpt2_dataset
 
-from datasets import list_metrics, load_metric
 from modules.training import Train
 from modules.generate import Generate
-
+from modules.evaluate import Evaluate
 
 #import transformers
 #print('use transformers version = ',transformers.__version__) # make sure it is 2.6.0
@@ -57,7 +56,7 @@ if __name__ == "__main__":
 	'''
 	device  = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 	print('device: {}'.format(device))
-
+	"""
 	file_name = config.file_name
 	file = os.path.join(config.data_dir, file_name)
 	if os.path.exists(file):
@@ -123,8 +122,8 @@ if __name__ == "__main__":
 		print('Model path does not exist.')
 	# 
 	#resume finetuning
-	# other path
 	
+	"""
 	'''----------------------------------------------------------------
 	6. Generation
 	'''

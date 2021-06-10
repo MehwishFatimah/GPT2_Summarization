@@ -41,7 +41,7 @@ class Generate(object):
 		
 		self.tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-		self.summaries = os.path.join(config.out_dir, config.generated)
+		self.summaries = os.path.join(config.out_dir, config.results)
 		if not os.path.exists(self.summaries):
 			os.makedirs(self.summaries)
 			

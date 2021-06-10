@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu May 27 14:36:41 2021
-
+TODO: Merge it with data
 @author: fatimamh
 """
 
