@@ -1,14 +1,13 @@
 #import os
 
 #input setup
-data_dir = "/hits/basement/nlp/fatimamh/test_data"
+data_dir = "/hits/basement/nlp/fatimamh/inputs/test_data"
 file_name = "en_train_sub.csv"
+#model + tokenizer
+model_dir = "/hits/basement/nlp/fatimamh/inputs/pretrained_models/gpt2"
 
-#tokenizer_dir = "/hits/basement/nlp/fatimamh/hf_pretrained_models/gpt2"
-model_dir = "/hits/basement/nlp/fatimamh/hf_pretrained_models/gpt2"
-
-#out dir
-out_dir = "/hits/basement/nlp/fatimamh/gpt2b_out"
+#output dir
+out_dir = "/hits/basement/nlp/fatimamh/outputs/gpt2_en"
 processed_set= "dataset" #split and tokenized
 final_model = "fine_tuned"
 training_models = "epochs_log"

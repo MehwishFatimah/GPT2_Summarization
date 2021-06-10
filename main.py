@@ -56,7 +56,7 @@ if __name__ == "__main__":
 	'''
 	device  = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 	print('device: {}'.format(device))
-	"""
+	
 	file_name = config.file_name
 	file = os.path.join(config.data_dir, file_name)
 	if os.path.exists(file):
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 	# 
 	#resume finetuning
 	
-	"""
+	
 	'''----------------------------------------------------------------
 	6. Generation
 	'''
