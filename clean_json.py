@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Oct 25 14:48:19 2019
-Modified on Tue Nov 26 
+ 
 @author: fatimamh
 
 FILE:
@@ -42,10 +42,12 @@ class GetLastAction(argparse.Action):
 
 parser = argparse.ArgumentParser(description = 'Help for data_utils')
 
-parser.add_argument('--d',   type = str,  default = '/mnt/basement/00_base_codes_data/merged_data_july_2020/base/cross',
+parser.add_argument('--d',   type = str,  default = '/mnt/basement/inputs/wiki_base/cross',
                     help = 'Directory path for data in and out.')
-parser.add_argument('--f',   nargs = '+', action  = GetLastAction,
-                    default = ['en_de_test.json','en_de_val.json','en_de_train.json'],
+parser.add_argument('--f',   type = str,  default = 'wiki_cross',
+                    help = 'Final file name.')
+parser.add_argument('--fs',   nargs = '+', action  = GetLastAction,
+                    default = ['test.json','val.json','train.json'],
                     help = 'File names with extension.')
 parser.add_argument('--c',   type = bool, default = True,
                     help = 'Clean text: default =True.')
@@ -68,20 +70,24 @@ after removing those tags.
     text  : str
 '''
 def replace_tags_a(text):
-
+    
     text = text.replace('<ARTICLE>', ' ')
     text = text.replace('</ARTICLE>', ' ')
-    text = text.replace('<TITLE>', ' ')
-    text = text.replace('</TITLE>', ' ')
-    text = text.replace('<HEADING>', ' ')
-    text = text.replace('</HEADING>', ' ')
+    text = re.sub(r'<TITLE> .*? </TITLE>','', text)
+    #text = text.replace('<TITLE>', ' ')
+    #text = text.replace('</TITLE>', ' ')
+    
+    text = re.sub(r'<HEADING> .*? </HEADING>','', text)
+    #text = text.replace('<HEADING>', ' ')
+    #text = text.replace('</HEADING>', ' ')
     text = text.replace('<SECTION>', ' ')
     text = text.replace('</SECTION>', ' ')
+    
     text = text.replace('<S>', ' ')
     text = text.replace('</S>', ' ')
     text = text.replace('\n', ' ')
     text = re.sub('\s+', ' ', text)
-
+    
     return text
 
 '''-----------------------------------------------------------------------
@@ -128,9 +134,10 @@ def clean_data(df, clean_text):
     if clean_text:
         print('cleaning text')
         df['text']    = df['text'].apply(lambda x: replace_tags_a(x))
-        df['summary'] = df['summary'].apply(lambda x: replace_tags_s(x))
-        df['dtext']    = df['dtext'].apply(lambda x: replace_tags_a(x))
+        #df['summary'] = df['summary'].apply(lambda x: replace_tags_s(x))
+        #df['dtext']    = df['dtext'].apply(lambda x: replace_tags_a(x))
         df['dsummary'] = df['dsummary'].apply(lambda x: replace_tags_s(x))
+        df = df.rename(columns={'dsummary': 'summary'})
 
     if 'index' in df.columns:
         del df['index']
@@ -142,22 +149,34 @@ def clean_data(df, clean_text):
 
 '''-----------------------------------------------------------------------
 '''
-def process_data(files, folder, clean_text, ext):
+def process_data(out_file, files, folder, clean_text, ext):
 
-
+    big_df =  pd.DataFrame()
     for file in files:
+        print(file)
         file = os.path.join(folder, file)
         df   = pd.read_json(file, encoding = 'utf-8')
-        #print(df.head(2))
-        df   = clean_data(df, clean_text)
+        del df['dtext']
+        del df['summary']
+        #df = df.head(2)
+        print('before cleaning: \n', df.head(2))
+        df = clean_data(df, clean_text)
+        print('after cleaning: \n', df.head(2))
+        big_df = big_df.append(df)
         print('\n--------------------------------------------')
 
-        file_name  = os.path.splitext(file)[0]
-        file       = os.path.join(folder, file_name + ext)
-        print(file)
-        df.to_csv(file, index = False)
+    
+    print(big_df.head(5))
+    big_df = big_df.sample(frac = 1)
+    print(big_df.head(5))
+    
+    print(len(big_df))
+    
+    file = os.path.join(folder, out_file + ext)
+    print(file)
+    big_df.to_csv(file, index = False)
 
-        print('\n======================================================================================')
+    
 
 '''-----------------------------------------------------------------------
 '''
@@ -165,5 +184,5 @@ if __name__ == "__main__":
     start_time = time.time()
     args = parser.parse_args()
     print('\n\n----------------------Printing all arguments:--------------------\n{}\n----------------------------------------\n'.format(args))
-    process_data(args.f, args.d, args.c, args.e)
+    process_data(args.f, args.fs, args.d, args.c, args.e)
     print ('\n-------------------Memory and time usage: {:.2f} MBs in {:.2f} seconds.--------------------\n'.format((resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024), (time.time() - start_time)))

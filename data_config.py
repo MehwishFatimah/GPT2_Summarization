@@ -1,8 +1,8 @@
 #import os
 
 #input setup
-data_dir = "/hits/basement/nlp/fatimamh/inputs/test_data"
-file_name = "en_train_sub.csv"
+data_dir = "/hits/basement/nlp/fatimamh/inputs"
+file_name = "wiki_mono.csv"
 #model + tokenizer
 model_dir = "/hits/basement/nlp/fatimamh/inputs/pretrained_models/gpt2"
 
@@ -33,7 +33,7 @@ batch_size = 1 # fix it
 test_batch = 1 
 
 #training param
-epochs = 2
+epochs = 50
 learning_rate = 5e-4
 warmup_steps = 1e2
 epsilon = 1e-8
@@ -47,7 +47,7 @@ temperature=1
 top_k=10 
 top_p=0.5
 num_beams=4
-gen_type = 2 #0= top_k, 1= beam_search, 2= both
+gen_type = 0 #0= top_k, 1= beam_search, 2= both
 
 
 

@@ -99,17 +99,27 @@ class Generate(object):
 		context = context.unsqueeze(0)
 		generated = context
 		#print('generated: {}'.format(generated))
+		max_length = 1024 #min(1024, length + generated.size(-1))
+		#print('max_length: {}'.format(max_length))
 		with torch.no_grad():  
 			for _ in range(length):
 				inputs = {'input_ids': generated}
+				#print('inputs: {}'.format(inputs))
 				outputs = self.model(**inputs)  # Note: we could also use 'past' with GPT-2/Transfo-XL/XLNet (cached hidden-states)
+				#print('outputs: {}'.format(outputs))
 				next_token_logits = outputs[0][0, -1, :] / temperature
+				#print('next_token_logits: {}'.format(next_token_logits))
 				filtered_logits = self.top_k_top_p_filtering(next_token_logits, top_k=top_k, top_p=top_p)
 				#print('filtered_logits.shape: {}'.format(filtered_logits.shape))
 				next_token = torch.multinomial(F.softmax(filtered_logits, dim=-1), num_samples=1)
 				#print('next_token.shape: {}'.format(next_token.shape))
+				print('top k - generated.squeeze(0): {}'.format(generated.squeeze(0).size()))
+				size = list(generated.squeeze(0).size())
+				if size[0] == max_length:
+					break
 				generated = torch.cat((generated, next_token.unsqueeze(0)), dim=1)
-		#print('generated: {}'.format(generated.shape))
+				print('top k - generated: {}'.format(generated.shape))
+
 		return generated
 
 	'''----------------------------------------------------------------
@@ -181,9 +191,9 @@ class Generate(object):
 			if gen_type==0:
 
 				generated = self.top_k_generate(encodings, length=config.max_sum, temperature=config.temperature, top_k=config.top_k, top_p=config.top_p)
-				print('generated: {}'.format(generated.shape))
+				print('before list - generated: {}'.format(generated.shape))
 				generated = generated[0, len(encodings):].tolist()
-				print('generated: {}'.format(len(generated)))			
+				print('after list - generated: {}'.format(len(generated)))			
 				#print(row['text'])
 				gen = self.tokenizer.decode(generated, skip_special_tokens=True)
 
